@@ -16,7 +16,7 @@ namespace persons_crud_api.Extensions.Mappers
             dto.LastName = person.LastName;
             dto.Age = person.Age;
             dto.Address = person.Address;
-            dto.Vc = person.Vc;
+            dto.Vd = person.Vd;
             dto.Id = person.Id;
             dto.Rut = person.Rut;
 

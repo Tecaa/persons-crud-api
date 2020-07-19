@@ -16,7 +16,7 @@ namespace persons_crud_api.Extensions.Mappers
             person.LastName = newPersonRequest.LastName;
             person.Age = newPersonRequest.Age;
             person.Address = newPersonRequest.Address;
-            person.Vc = newPersonRequest.Vc;
+            person.Vd = newPersonRequest.Vd;
             person.Rut = newPersonRequest.Rut;
 
             return person;

@@ -14,10 +14,10 @@ namespace persons_crud_api.Controllers
     [Route("[controller]")]
     public class PersonController : ControllerBase
     {
-        private static readonly Person[] Persons = new Person[]
+        private static List<Person> Persons = new List<Person>()
         {
-            new Person(){ Id=1, Name = "Jimmy", LastName = "Raynor", Age = 42, Rut = 9810616, Vc = '2', Address = "Augustgrad 4112, Korhal" },
-            new Person(){ Id=2, Name = "Sarah", LastName = "Kerrigan", Age = 38, Rut = 11832947, Vc = '3', Address = "Talematros 243, Shakuras" }
+            new Person(){ Id=1, Name = "Jimmy", LastName = "Raynor", Age = 42, Rut = 9810616, Vd = '2', Address = "Augustgrad 4112, Korhal" },
+            new Person(){ Id=2, Name = "Sarah", LastName = "Kerrigan", Age = 38, Rut = 11832947, Vd = '3', Address = "Talematros 243, Shakuras" }
         };
 
         private readonly ILogger<PersonController> _logger;
@@ -46,21 +46,22 @@ namespace persons_crud_api.Controllers
         {
             _logger.LogInformation("PersonController.Post", newPersonRequest);
             Person person = newPersonRequest.ToPerson();
-            int id = Persons.Length + 10000;
+            int id = Persons.Count() + 1 + 10000;
             person.Id = id;
-            Persons.Append(person);
+            Persons.Add(person);
             return Persons.FirstOrDefault(p => p.Id.Equals(id)).ToPersonDto();
         }
 
-        [HttpPut]
-        public PersonDto Put(PersonDto personDto)
+        [HttpPut("/{id}")]
+        public PersonDto Put(int id, PersonDto personDto)
         {
             _logger.LogInformation("PersonController.Put", personDto);
             Person person = personDto.ToPerson();
+            person.Id = id;
 
-            int index = Persons.ToList().FindIndex(p => p.Id.Equals(personDto.Id));
+            int index = Persons.ToList().FindIndex(p => p.Id.Equals(id));
 
-            Persons.SetValue(person, index);
+            Persons[index] = person;
             return Persons.ElementAt(index).ToPersonDto();
         }
 

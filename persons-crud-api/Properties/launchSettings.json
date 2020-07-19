@@ -19,7 +19,6 @@
     },
     "persons_crud_api": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "https://localhost:5001/person",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
