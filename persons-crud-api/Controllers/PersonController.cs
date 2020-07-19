@@ -28,43 +28,64 @@ namespace persons_crud_api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<PersonDto> Get()
+        public ActionResult<IEnumerable<PersonDto>> Get()
         {
             _logger.LogInformation("PersonController.Get");
-            return Persons.Select(p => p.ToPersonDto());
+            return Ok(Persons.Select(p => p.ToPersonDto()));
         }
 
         [HttpGet("/{id}")]
-        public PersonDto Get(int id)
+        public ActionResult<PersonDto> Get(int id)
         {
             _logger.LogInformation("PersonController.Get", id);
-            return Persons.FirstOrDefault(p => p.Id.Equals(id)).ToPersonDto();
+            Person person = Persons.FirstOrDefault(p => p.Id.Equals(id));
+            if (person == null)
+            {
+                return NotFound();
+            }
+            return Ok(person.ToPersonDto());
         }
 
         [HttpPost]
-        public PersonDto Post(NewPersonRequest newPersonRequest)
+        public ActionResult<PersonDto> Post(NewPersonRequest newPersonRequest)
         {
             _logger.LogInformation("PersonController.Post", newPersonRequest);
             Person person = newPersonRequest.ToPerson();
             int id = Persons.Count() + 1 + 10000;
             person.Id = id;
             Persons.Add(person);
-            return Persons.FirstOrDefault(p => p.Id.Equals(id)).ToPersonDto();
+            return Ok(Persons.FirstOrDefault(p => p.Id.Equals(id)).ToPersonDto());
         }
 
         [HttpPut("/{id}")]
-        public PersonDto Put(int id, PersonDto personDto)
+        public ActionResult<PersonDto> Put(int id, PersonDto personDto)
         {
-            _logger.LogInformation("PersonController.Put", personDto);
+            _logger.LogInformation("PersonController.Put", id, personDto);
             Person person = personDto.ToPerson();
             person.Id = id;
 
             int index = Persons.ToList().FindIndex(p => p.Id.Equals(id));
 
             Persons[index] = person;
-            return Persons.ElementAt(index).ToPersonDto();
+            return Ok(Persons.ElementAt(index).ToPersonDto());
         }
 
+        [HttpDelete("/{id}")]
+        public ActionResult Delete(int id)
+        {
+            _logger.LogInformation("PersonController.Delete", id);
+            try
+            {
+                int index = Persons.ToList().FindIndex(p => p.Id.Equals(id));
+                Persons.RemoveAt(index);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "PersonController.Delete");
+                return NotFound();
+            }
+        }
 
     }
 }
