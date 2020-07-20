@@ -27,7 +27,7 @@ namespace persons_crud_api.Controllers
         public ActionResult<IEnumerable<PersonDto>> Get()
         {
             _logger.LogInformation("PersonController.Get");
-            return Ok(_context.Persons.Select(p => p.ToPersonDto()));
+            return Ok(_context.Persons.OrderBy(p => p.Id).Select(p => p.ToPersonDto()));
         }
 
         [HttpGet("/{id}")]
