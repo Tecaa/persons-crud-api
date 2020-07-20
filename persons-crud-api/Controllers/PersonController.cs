@@ -14,31 +14,27 @@ namespace persons_crud_api.Controllers
     [Route("[controller]")]
     public class PersonController : ControllerBase
     {
-        private static List<Person> Persons = new List<Person>()
-        {
-            new Person(){ Id=1, Name = "Jimmy", LastName = "Raynor", Age = 42, Rut = 9810616, Vd = '2', Address = "Augustgrad 4112, Korhal" },
-            new Person(){ Id=2, Name = "Sarah", LastName = "Kerrigan", Age = 38, Rut = 11832947, Vd = '3', Address = "Talematros 243, Shakuras" }
-        };
-
         private readonly ILogger<PersonController> _logger;
+        private readonly PersonContext _context;
 
-        public PersonController(ILogger<PersonController> logger)
+        public PersonController(ILogger<PersonController> logger, PersonContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<PersonDto>> Get()
         {
             _logger.LogInformation("PersonController.Get");
-            return Ok(Persons.Select(p => p.ToPersonDto()));
+            return Ok(_context.Persons.Select(p => p.ToPersonDto()));
         }
 
         [HttpGet("/{id}")]
         public ActionResult<PersonDto> Get(int id)
         {
             _logger.LogInformation("PersonController.Get", id);
-            Person person = Persons.FirstOrDefault(p => p.Id.Equals(id));
+            Person person = _context.Persons.FirstOrDefault(p => p.Id.Equals(id));
             if (person == null)
             {
                 return NotFound();
@@ -51,10 +47,9 @@ namespace persons_crud_api.Controllers
         {
             _logger.LogInformation("PersonController.Post", newPersonRequest);
             Person person = newPersonRequest.ToPerson();
-            int id = Persons.Count() + 1 + 10000;
-            person.Id = id;
-            Persons.Add(person);
-            return Ok(Persons.FirstOrDefault(p => p.Id.Equals(id)).ToPersonDto());
+            person = _context.Persons.Add(person).Entity;
+            _context.SaveChanges();
+            return Ok(person.ToPersonDto());
         }
 
         [HttpPut("/{id}")]
@@ -64,10 +59,10 @@ namespace persons_crud_api.Controllers
             Person person = personDto.ToPerson();
             person.Id = id;
 
-            int index = Persons.ToList().FindIndex(p => p.Id.Equals(id));
+            person = _context.Persons.Update(person).Entity;
+            _context.SaveChanges();
 
-            Persons[index] = person;
-            return Ok(Persons.ElementAt(index).ToPersonDto());
+            return Ok(person.ToPersonDto());
         }
 
         [HttpDelete("/{id}")]
@@ -76,8 +71,10 @@ namespace persons_crud_api.Controllers
             _logger.LogInformation("PersonController.Delete", id);
             try
             {
-                int index = Persons.ToList().FindIndex(p => p.Id.Equals(id));
-                Persons.RemoveAt(index);
+                Person person = _context.Persons.Find(id);
+                _context.Persons.Remove(person);
+                _context.SaveChanges();
+
                 return Ok();
             }
             catch (Exception e)
