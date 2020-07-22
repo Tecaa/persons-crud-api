@@ -21,7 +21,7 @@ namespace persons_crud_api.Models
 
         [MaxLength(60)]
         public string LastName { get; set; }
-        public int Age { get; set; }
+        public int? Age { get; set; }
 
         [MaxLength(400)]
         public string Address { get; set; }

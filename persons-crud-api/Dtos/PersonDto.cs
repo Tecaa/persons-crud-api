@@ -12,7 +12,7 @@ namespace persons_crud_api.Dtos
         public char Vd { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
-        public int Age { get; set; }
+        public int? Age { get; set; }
         public string Address { get; set; }
     }
 }

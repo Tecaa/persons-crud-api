@@ -45,6 +45,8 @@ namespace persons_crud_api
             {
                 options.AddPolicy("AllowAnyPolicy", policyOptions =>
                 {
+                    
+                    policyOptions.WithOrigins(Configuration.GetValue<string>("FrontOrigin"));
                     policyOptions.AllowAnyMethod();
                     policyOptions.AllowAnyHeader();
                     policyOptions.WithExposedHeaders("Content-Disposition");

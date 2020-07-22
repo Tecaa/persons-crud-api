@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using persons_crud_api;
@@ -9,9 +10,10 @@ using persons_crud_api;
 namespace persons_crud_api.Migrations
 {
     [DbContext(typeof(PersonContext))]
-    partial class PersonContextModelSnapshot : ModelSnapshot
+    [Migration("20200722024145_AgeNullable")]
+    partial class AgeNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
